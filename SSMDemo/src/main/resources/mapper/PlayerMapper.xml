@@ -3,11 +3,23 @@
 
 <mapper namespace="com.wangcc.ssm.dao.PlayerDao">
 
-
-<insert id="insertPlayer" parameterType="com.wangcc.ssm.entity.Player">
-insert into player(id,name,age) values(#{id},#{name},#{age})
+<resultMap type="com.wangcc.ssm.entity.Player" id="Player">
+<result property="name" column="name" typeHandler="com.wangcc.ssm.typehandler.StringTypeHandler"/>
+<result property="id" column="id"/>
+<result property="age" column="age" typeHandler="com.wangcc.ssm.typehandler.IntegerTypeHandler"/>
+<result property="teamId" column="team_id"/>
+</resultMap>
+<!-- jdbcType
+使用MyBatis框架做更新操作时，在该字段需要更新的内容为空时，就会出现1111错误，也就是无效的列类型，这个时候你就要使用jdbcType。
+由于参数出现了null值,对于Mybatis,如果进行操作的时候,没有指定jdbcType类型的参数,mybatis默认jdbcType.OTHER导致,给参数加上jdbcType可解决(注意大小写) 
+ -->
+<insert id="insertPlayer" parameterType="Player">
+insert into player(id,name,age,team_id) values(s_test_player.nextval,#{name,jdbcType=VARCHAR},#{age},#{teamId})
 </insert>
-<select id="selectById" parameterType="Integer" resultType="com.wangcc.ssm.entity.Player">
+<select id="selectById" parameterType="Integer" resultMap="Player">
 select * from player where id=#{id}
+</select>
+<select id="selectByTeamId" parameterType="Integer" resultMap="Player">
+select * from player where team_id=#{id}
 </select>
 </mapper>
