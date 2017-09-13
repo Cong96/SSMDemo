@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD SQL MAP Config 3.2//EN"  
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">  
+<configuration>  
+  <!-- http://blog.csdn.net/xiaozaq/article/details/54618873
+Mybatis在使用resultMap来映射查询结果中的列，如果查询结果中包含空值的列(不是null)，则Mybatis在映射的时候，不会映射这个字段  
+   -->
+    <settings>  
+        <setting name="callSettersOnNulls" value="true"/>  
+    </settings>  
+  
+</configuration>  
