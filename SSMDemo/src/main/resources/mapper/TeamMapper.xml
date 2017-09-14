@@ -9,7 +9,7 @@
 <result property="allSalary" column="all_salary"/>
 <!--  association 和 collection 有顺序要求-->
 <association property="coach" column="coach_id" select="com.wangcc.ssm.dao.CoachDao.getCoachById"></association>
-<!-- ofType的作用 还有javaType -->
+<!-- ofType的作用 还有javaType   这里最好还是用javaType="arraylist"-->
 <collection property="players" ofType="Player" column="id" select="com.wangcc.ssm.dao.PlayerDao.selectByTeamId">
 </collection>
 </resultMap>
@@ -17,6 +17,9 @@
 select * from team where id=#{id}
 </select>
 <insert id="insertTeam" parameterType="Team">
+<selectKey resultType="integer" order="AFTER" keyProperty="id">
+select test_team.currval from dual
+</selectKey>
 insert into team (id,team_name,location,all_salary,coach_id) values (test_team.nextval,#{teamName},#{location},#{allSalary},#{coach.id})
 </insert>
 </mapper>

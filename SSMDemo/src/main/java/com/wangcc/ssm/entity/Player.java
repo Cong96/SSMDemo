@@ -6,9 +6,16 @@ public class Player implements Serializable{
 	private String name;
 	private Integer id;
 	private int age;
-	private int teamId;
+	private Integer teamId;
 	public int getTeamId() {
 		return teamId;
+	}
+
+	public Player(String name, int age, Integer teamId) {
+		super();
+		this.name = name;
+		this.age = age;
+		this.teamId = teamId;
 	}
 
 	public void setTeamId(int teamId) {
@@ -29,12 +36,7 @@ public class Player implements Serializable{
 		this.id = id;
 	}
 
-	public Player(String name, Integer id, int age) {
-		super();
-		this.name = name;
-		this.id = id;
-		this.age = age;
-	}
+
 	public String getName() {
 		return name;
 	}

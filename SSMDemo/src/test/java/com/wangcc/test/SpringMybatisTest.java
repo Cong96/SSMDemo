@@ -1,5 +1,8 @@
 package com.wangcc.test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.apache.log4j.Logger;
@@ -64,5 +67,32 @@ public class SpringMybatisTest {
 
 	    	Coach coach=team.getCoach();
 	        logger.info(JSON.toJSONString(coach));  
+	    }
+	    @Test
+	    public void testInsertTeam() {
+	    	Coach coach=new Coach("phil jackson1", 80, 11111.1f);
+	    	coachService.insertCoach(coach);
+	        logger.info(JSON.toJSONString(coach));  
+	    	Team team=new Team("my lakerss1", "los angeles", 1112334.1f, coach);
+	    	teamService.insertTeam(team);
+	        logger.info(JSON.toJSONString(team));  
+	        Player player=new Player("kobe paul", 32, team.getId());
+	        playerService.insert(player);
+	        Player player1=new Player("paul", 32, team.getId());
+	        playerService.insert(player1);
+
+	      
+
+	    }
+	    
+	    
+	    @Test
+	    public void testGetTeam() {
+	    	Team team=teamService.getTeamById(7);
+	    	logger.info(JSON.toJSONString(team));  
+	    	Coach coach=team.getCoach();
+		    logger.info(JSON.toJSONString(coach)); 
+		    List<Player> players=team.getPlayers();
+		    logger.info(JSON.toJSONString(players));
 	    }
 }
