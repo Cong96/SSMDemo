@@ -36,7 +36,8 @@
         <!-- 获取连接最大等待时间 -->  
         <property name="maxWait" value="${maxWait}"></property>  
     </bean>  
-  
+    <!-- 导入ehcache配置 -->
+      <import resource="classpath:applicationContext-ehcache.xml"/>  
     <!-- spring和MyBatis完美整合，不需要mybatis的配置映射文件
         在定义SqlSessionFactoryBean的时候，dataSource属性是必须指定的，它表示用于连接数据库的数据源。当然，我们也可以指定一些其他的属性，下面简单列举几个：
 

@@ -6,6 +6,7 @@
 Mybatis在使用resultMap来映射查询结果中的列，如果查询结果中包含空值的列(不是null)，则Mybatis在映射的时候，不会映射这个字段  
    -->
     <settings>  
+         <setting name="logImpl" value="STDOUT_LOGGING" />
         <setting name="callSettersOnNulls" value="true"/>  
     </settings>  
   

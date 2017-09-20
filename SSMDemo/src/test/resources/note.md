@@ -66,3 +66,22 @@ classpath:只能加载找到的第一个资源文件
 classpath*:能加载多个路径下的资源文件
 http://blog.csdn.net/kkdelta/article/details/5507799
 
+- The type org.springframework.context.ApplicationContextInitializer cannot be resolved. It is indirectly referenced from required .class files
+去掉新加的ehcache依赖就好了
+
+
+
+
+
+Creating a new SqlSession
+SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7133da86] was not registered for synchronization because synchronization is not active
+JDBC Connection [jdbc:oracle:thin:@(DESCRIPTION =(ADDRESS = (PROTOCOL = TCP)(HOST = 10.18.1.122)(PORT = 1521))(CONNECT_DATA =(SERVER = DEDICATED)(SERVICE_NAME = dwxt))), UserName=QUNAER , Oracle JDBC driver] will not be managed by Spring
+==>  Preparing: select test_coach.nextval from dual 
+==> Parameters: 
+<==    Columns: NEXTVAL
+<==        Row: 18
+<==      Total: 1
+==>  Preparing: insert into coach (id,name,age,salary) values(test_coach.currval,?,?,?) 
+==> Parameters: phil jackson(String), 66(Integer), 11111.1(Float)
+<==    Updates: 1
+Closing non transactional SqlSession [org.apache.ibatis.session.defaults.DefaultSqlSession@7133da86]

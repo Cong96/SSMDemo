@@ -10,9 +10,9 @@ AFTER代表在insert语句之后执行
 这里我之前一直犯了一个错误
 这是把主键返回给JavaBean中的相应属性，为keyProperty对应的属性值，这里为id,而不是说这个方法的返回值就是主键
  Oracle AFTER BEFORE都可以，有小伙伴说必须用BEFORE，但是我试了BEFORE和AFTER都可以 -->
-<selectKey resultType="integer" order="AFTER"  keyProperty="id">
-select test_coach.currval from dual
+<selectKey resultType="integer" order="BEFORE"  keyProperty="id">
+select test_coach.nextval from dual
 </selectKey>
-insert into coach (id,name,age,salary) values(test_coach.nextval,#{name},#{age},#{salary})
+insert into coach (id,name,age,salary) values(test_coach.currval,#{name},#{age},#{salary})
 </insert>
 </mapper>
