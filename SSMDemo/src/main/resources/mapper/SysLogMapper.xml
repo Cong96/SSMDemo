@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+<mapper namespace="com.wangcc.ssm.frame.aspect.dao.SysLogDao">
+<resultMap type="SysLog" id="SysLogMap">
+<id property="id" column="log_id"/>
+<result property="description" column="description"/>
+<result property="method" column="method"/>
+<result property="logType" column="logtype"/>
+<result property="requestIp" column="requestip"/>
+<result property="execptionCode" column="execption_code"/>
+<result property="exceptionDetail" column="exception_detail"/>
+<result property="params" column="params"/>
+<result property="createBy" column="create_user" typeHandler="com.wangcc.ssm.typehandler.StringTypeHandler"/>
+<result property="createDate" column="create_date"/>
+</resultMap>
+<insert id="insertLog" parameterType="SysLog">
+insert into sys_log(log_id,description,method,logtype,requestip,execption_code,exception_detail,params,create_user,create_date)
+values(#{id},#{description,jdbcType=VARCHAR},#{method},#{logType,jdbcType=VARCHAR},#{requestIp},#{execptionCode,jdbcType=VARCHAR},#{exceptionDetail,jdbcType=VARCHAR},#{params,jdbcType=VARCHAR},#{createBy},#{createDate})
+</insert>
+<delete id="deleteById" parameterType="string">
+delete from sys_log where log_id=#{id}
+</delete>
+<select id="selectById" parameterMap="string" resultMap="SysLogMap">
+select * from sys_log where log_id=#{id}
+</select>
+
+</mapper>

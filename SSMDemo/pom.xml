@@ -15,6 +15,8 @@
         <!-- log4j日志文件管理包版本 -->  
         <slf4j.version>1.7.7</slf4j.version>  
          <log4j.version>1.2.17</log4j.version>  
+         <!-- aspectj相关 -使用AspectJ方式注解 -->
+         <aspectj.version>1.6.11</aspectj.version>  
     </properties>  
   <dependencies>
    <dependency>
@@ -132,20 +134,16 @@
        <version>1.2.0</version>
    </dependency>
         <!-- oracle -->
-             <dependency>
-			<groupId>com.oracle</groupId>
-			<artifactId>ojdbc14</artifactId>
-			<version>10.2.0.4.0</version>
-		</dependency>
+         
         <!-- 导入Mysql数据库链接jar包
         
+         -->  
+       
          <dependency>  
             <groupId>mysql</groupId>  
             <artifactId>mysql-connector-java</artifactId>  
             <version>5.1.30</version>  
         </dependency>  
-         -->  
-       
         <!-- 导入dbcp的jar包，用来在applicationContext.xml中配置数据库 -->  
         <dependency>  
             <groupId>commons-dbcp</groupId>  
@@ -211,7 +209,18 @@
             <artifactId>commons-codec</artifactId>  
             <version>1.9</version>  
         </dependency>
-    
+     <!--使用AspectJ方式注解需要相应的包-->  
+      <dependency>  
+            <groupId>org.aspectj</groupId>  
+            <artifactId>aspectjrt</artifactId>  
+            <version>${aspectj.version}</version>  
+        </dependency>  
+         <!--使用AspectJ方式注解需要相应的包-->  
+        <dependency>  
+            <groupId>org.aspectj</groupId>  
+            <artifactId>aspectjweaver</artifactId>  
+            <version>${aspectj.version}</version>  
+        </dependency>  
   </dependencies>
   <build>
     <finalName>SSMDemo</finalName>

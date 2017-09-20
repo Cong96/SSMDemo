@@ -11,7 +11,7 @@
     <!-- <ehcache:annotation-driven /> -->  
   
     <ehcache:annotation-driven cache-manager="ehcacheManager" />  
-  
+  <!-- Spring缓存配置 -->
     <ehcache:config cache-manager="ehcacheManager">  
         <ehcache:evict-expired-elements interval="60" />  
     </ehcache:config>  
