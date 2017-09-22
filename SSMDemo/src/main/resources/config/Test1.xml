@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+<props>
+<prop>config/longTerm.properties</prop>
+<prop>config/PDF.properties</prop>
+</props>
+<xmlConfig>
+<xml>config/test.xml</xml>
+<xml>config/test1.xml</xml>
+</xmlConfig>
+</config>

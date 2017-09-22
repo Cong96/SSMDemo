@@ -10,7 +10,6 @@ import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.slf4j.Logger;
@@ -24,7 +23,7 @@ import com.wangcc.ssm.frame.aspect.service.SysLogService;
 import com.wangcc.ssm.frame.entity.SysLog;
 import com.wangcc.ssm.util.ClassLoaderWrapper;
 
-@Aspect
+//@Aspect
 @Component
 public class SysLogAspect {
 	private static Logger logger = LoggerFactory.getLogger(SysLogAspect.class);
@@ -33,13 +32,21 @@ public class SysLogAspect {
 	private static ClassLoaderWrapper classLoaderWrapper = new ClassLoaderWrapper();
 
 	/*
-	 * ..任意子包 * 子包 * 子包 .. —— 通配 办法可以有0个或多个参数|
+	 * 1、execution(): 表达式主体。
+	 * 
+	 * 2、第一个*号：表示返回类型，*号表示所有的类型。
+	 * 
+	 * 3、包名：表示需要拦截的包名，后面的两个句点表示当前包和当前包的所有子包，com.sample.service.impl包、子孙包下所有类的方法。
+	 * 
+	 * 4、第二个*号：表示类名，*号表示所有的类。
+	 * 
+	 * 5、*(..):最后这个星号表示方法名，*号表示所有的方法，后面括弧里面表示方法的参数，两个句点表示任何参数。
 	 */
-	@Pointcut("execution (* com.wangcc.ssm.service..*.*(..))")
+	@Pointcut("execution  (* com.wangcc.ssm.service.*.*(..)) ")
 	public void serviceAspect() {
 	}
 
-	@Before("serviceAspect")
+	@Before("serviceAspect()")
 	public void doBefore(JoinPoint joinPoint) {
 		logger.info("==========执行service前置通知===============");
 		if (logger.isInfoEnabled()) {
@@ -117,7 +124,7 @@ public class SysLogAspect {
 					+ "." + operationType);
 			log.setLogType(operationType);
 			log.setRequestIp(ip);
-			log.setExceptioncode(null);
+			log.setExceptionCode(null);
 			log.setExceptionDetail(null);
 			log.setParams(null);
 			// 项目中应该是只有IP记录
@@ -137,7 +144,7 @@ public class SysLogAspect {
 	// 配置后置返回通知,使用在方法aspect()上注册的切入点
 	@AfterReturning("serviceAspect()")
 	public void afterReturn(JoinPoint joinPoint) {
-		logger.info("=====执行controller后置返回通知=====");
+		logger.info("=====执行service后置返回通知=====");
 		if (logger.isInfoEnabled()) {
 			logger.info("afterReturn " + joinPoint);
 		}
@@ -149,7 +156,7 @@ public class SysLogAspect {
 	 * @param joinPoint
 	 * @param e
 	 */
-	@AfterThrowing(pointcut = "controllerAspect()", throwing = "e")
+	@AfterThrowing(pointcut = "serviceAspect()", throwing = "e")
 	public void doAfterThrowing(JoinPoint joinPoint, Throwable e) {
 		/*
 		 * HttpServletRequest request = ((ServletRequestAttributes)
@@ -205,8 +212,9 @@ public class SysLogAspect {
 			SysLog log = new SysLog();
 			log.setId(UUID.randomUUID().toString());
 			log.setDescription(operationName);
-			log.setExceptioncode(e.getClass().getName());
+			log.setExceptionCode(e.getClass().getName());
 			log.setLogType(operationType);
+
 			log.setExceptionDetail(e.getMessage());
 			log.setMethod(
 					(joinPoint.getTarget().getClass().getName() + "." + joinPoint.getSignature().getName() + "()"));

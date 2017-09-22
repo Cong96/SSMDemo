@@ -68,6 +68,8 @@ public class SpringMybatisTest {
 
 		List<Player> players = playerService.getPlayerList();
 		System.out.println("Second Time");
+		logger.info(JSON.toJSONString(players));
+
 		long l1 = new Date().getTime();
 		List<Player> players1 = playerService.getPlayerList();
 		long l2 = new Date().getTime();

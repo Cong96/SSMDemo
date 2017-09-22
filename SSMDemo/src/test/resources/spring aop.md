@@ -19,3 +19,9 @@ http://www.cnblogs.com/hongwz/p/5764917.html
             <version>${aspectj.version}</version>  
         </dependency> ```
      
+     
+ ####Q1:
+ 为什么经过AOP得到的result之后，JSON.toJSONString()失效 ，返回的会是null
+ 如果是动态代理的话，那么Mybatis也用了动态代理呀   
+     
+ 
