@@ -10,17 +10,16 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.alibaba.fastjson.JSON;
 import com.wangcc.ssm.entity.Player;
-import com.wangcc.ssm.service.PlayerService;
 import com.wangcc.ssm.util.SpringUtil;
 
-@RunWith(SpringJUnit4ClassRunner.class) // ±íÊ¾¼Ì³ÐÁËSpringJUnit4ClassRunnerÀà
+@RunWith(SpringJUnit4ClassRunner.class) // ï¿½ï¿½Ê¾ï¿½Ì³ï¿½ï¿½ï¿½SpringJUnit4ClassRunnerï¿½ï¿½
 @ContextConfiguration(locations = { "classpath:mybatis-spring.xml" })
 public class ReflectTest {
 	private static Logger logger = Logger.getLogger(ReflectTest.class);
 
 	@Test
 	public void reflect() throws Exception {
-		PlayerService playerService = (PlayerService) SpringUtil.getBean("playerService");
+		Object playerService = SpringUtil.getBean("playerService");
 		// Class clazz =
 		// this.getClass().getClassLoader().loadClass("com.wangcc.ssm.service.PlayerService");
 		Class clazz = playerService.getClass();
