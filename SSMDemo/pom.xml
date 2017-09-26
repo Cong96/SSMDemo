@@ -237,6 +237,12 @@
 		    <artifactId>commons-lang3</artifactId>
 		    <version>3.5</version>
 		</dependency>
+		<!-- lombok -->
+ <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>1.16.8</version>
+    </dependency>
   </dependencies>
   <build>
     <finalName>SSMDemo</finalName>
@@ -268,10 +274,12 @@
               <target>1.8</target>    
           </configuration>    
       </plugin>
-
-
-
-       </plugins>    
-  </build>
-</project>
+          <plugin>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok-maven-plugin</artifactId>
+              <version>1.16.6.1</version>
+          </plugin>
+          </plugins>
+     </build>
+     </project>
 

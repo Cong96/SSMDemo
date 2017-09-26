@@ -17,3 +17,5 @@ public static String getRelationShip(int relationId) {
 
 ```
 
+
+-Dead stores should be removed (squid:S1854)
