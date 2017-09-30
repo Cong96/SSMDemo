@@ -19,3 +19,6 @@ public static String getRelationShip(int relationId) {
 
 
 -Dead stores should be removed (squid:S1854)
+- "throws" declarations should not be superfluous
+
+- "Preconditions" and logging arguments should not require evaluation 

@@ -38,9 +38,10 @@
         </layout>  
     </appender>  
   
-    <!-- 输出到日志文件 每天一个日志 -->  
-    <appender name="LOGDEBUG" class="org.apache.log4j.DailyRollingFileAppender">  
-        <!-- Threshold屏蔽级别之下的日志输出 -->  
+    <!-- 输出到日志文件 每天一个日志 
+    
+       <appender name="LOGDEBUG" class="org.apache.log4j.DailyRollingFileAppender">  
+       
         <param name="Threshold" value="DEBUG" />  
         <param name="encoding" value="UTF-8" />  
         <param name="File" value="log/downepolicy-debug.log" />  
@@ -49,6 +50,8 @@
             <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss:SSS}] [%c] [%L] %p [%m]%n" />  
         </layout>  
     </appender>  
+    -->  
+ 
   
     <appender name="LOGINFO" class="org.apache.log4j.DailyRollingFileAppender">  
         <!-- <param name="Threshold" value="INFO" /> -->  
@@ -106,7 +109,7 @@
 #   info：显示info、error     
     -->
     <root>  
-        <level value="DEBUG" />  
+        <level value="INFO" />  
         <appender-ref ref="CONSOLE" />  
         <appender-ref ref="LOGDEBUG" />  
         <appender-ref ref="LOGINFO" />  
