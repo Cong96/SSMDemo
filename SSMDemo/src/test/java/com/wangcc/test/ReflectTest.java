@@ -12,7 +12,7 @@ import com.alibaba.fastjson.JSON;
 import com.wangcc.ssm.entity.Player;
 import com.wangcc.ssm.util.SpringUtil;
 
-@RunWith(SpringJUnit4ClassRunner.class) // ��ʾ�̳���SpringJUnit4ClassRunner��
+@RunWith(SpringJUnit4ClassRunner.class) // SpringJUnit4ClassRunner
 @ContextConfiguration(locations = { "classpath:mybatis-spring.xml" })
 public class ReflectTest {
 	private static Logger logger = Logger.getLogger(ReflectTest.class);

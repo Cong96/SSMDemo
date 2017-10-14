@@ -10,7 +10,7 @@ import org.junit.Test;
 public class FileTest {
 	@Test
 	public void test() throws Exception {
-		InputStream in = new FileInputStream("");
-		Reader reader = new FileReader("");
+		InputStream in = new FileInputStream("/ulic/partdev/epolicy/bjca/images/sign.gif");
+		Reader reader = new FileReader("/ulic/partdev/epolicy/bjca/images/sign.gif");
 	}
 }
