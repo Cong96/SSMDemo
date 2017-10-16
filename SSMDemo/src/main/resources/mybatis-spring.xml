@@ -19,7 +19,7 @@
                         <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
                         
             <!-- 自动扫描    https://zhidao.baidu.com/question/73410686.html-->  
-    <context:component-scan base-package="com.wangcc.ssm" />  
+    <context:component-scan base-package="com.wangcc.ssm,com.wangcc.test.properties" />  
     <!-- 引入配置文件 -->  
     <bean id="propertyConfigurer"  
         class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">  

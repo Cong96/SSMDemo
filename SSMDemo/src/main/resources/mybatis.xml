@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>  
+<!-- 单独使用Mybatis -->
+    <!DOCTYPE configuration  
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"  
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">  
+    <configuration>  
+     <properties resource="jdbc.properties"/>
+        <settings>  
+            <!-- changes from the defaults -->  
+         <setting name="logImpl" value="STDOUT_LOGGING" />
+        <setting name="callSettersOnNulls" value="true"/>   
+          
+        </settings>  
+        <typeAliases>  
+            <!--这里给实体类取别名，方便在mapper配置文件中使用-->  
+    <!-- 批量别名定义,指定包名，mybatis自动扫描包中的po类，自动定义别名，别名是类名(首字母大写或小写都可以,一般用小写) -->  
+    <package name="com.wangcc.ssm.entity" />  
+    <package name="com.wangcc.ssm.mybatis.interceptor.entity"/>
+</typeAliases> 
+        <plugins>  
+        <plugin interceptor="com.wangcc.ssm.mybatis.interceptor.PageInterceptor">  
+           <property name="databaseType" value="Oracle"/>  
+       </plugin>  
+   <plugin interceptor="com.wangcc.ssm.mybatis.interceptor.ParamMapInterceptor"/>  
+</plugins>  
+<!-- 元素类型为 "configuration" 的内容必须匹配 "(properties?,settings?,typeAliases?,typeHandlers?,objectFactory?,objectWrapperFactory?,plugins?,environments?,databaseIdProvider?,mappers?)"。 -->
+        <environments default="development">  
+            <environment id="development">  
+                <transactionManager type="JDBC"/>  
+                <dataSource type="POOLED">  
+               	<property name="driver" value="${driver}"/>
+				<property name="url" value="${url}"/>
+				<property name="username" value="${username}"/>
+				<property name="password" value="${password}"/>
+                </dataSource>  
+            </environment>  
+        </environments>  
+
+        
+        <!--这里添加的是执行CRUD操作的接口对应的配置文件(xml文件)-->  
+
+      <mappers>  
+      <!--     <package name="com.wangcc.ssm.dao"/>  
+      -->
+            <mapper resource="mapper/PlayerMapper.xml"></mapper>
+            <mapper resource="mapper/TeamMapper.xml"></mapper>
+      
+      <mapper resource="mapper/CoachMapper.xml"></mapper>
+</mappers>  
+    </configuration>  
