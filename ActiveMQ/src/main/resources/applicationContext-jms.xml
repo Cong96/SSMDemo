@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"  
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"  
+    xmlns:jms="http://www.springframework.org/schema/jms"  
+    xsi:schemaLocation="http://www.springframework.org/schema/beans  
+     http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+     http://www.springframework.org/schema/context  
+     http://www.springframework.org/schema/context/spring-context-3.0.xsd  
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+    http://www.springframework.org/schema/jms http://www.springframework.org/schema/jms/spring-jms-3.0.xsd">  
+    <context:component-scan base-package="com.wangcc.activemq.spring.service" />  
+
+	<!--该配置使配置文件可以使用外部的properties文件 -->
+	<bean id="propertyConfigurer"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:jms.properties</value>
+			</list>
+		</property>
+	</bean>
+	<!-- JMS连接工厂 all system must
+	
+	-->
+ <!-- 真正可以产生Connection的ConnectionFactory，由对应的 JMS服务厂商提供-->  
+	
+	<bean id="amqConnectionFactory" 
+		class="org.apache.activemq.ActiveMQConnectionFactory">
+		<property name="brokerURL">
+			<value>${brokerURL}</value>
+		</property>
+		<property name="userName">
+			<value>${userName}</value>
+		</property>
+		<property name="password">
+			<value>${password}</value>
+		</property>
+		
+		</bean>
+		<!-- 
+		 ConnectionFactory是用于产生到JMS服务器的链接的，Spring为我们提供了多个ConnectionFactory，有SingleConnectionFactory和CachingConnectionFactory。SingleConnectionFactory对于建立JMS服务器链接的请求会一直返回同一个链接，并且会忽略Connection的close方法调用。CachingConnectionFactory继承了SingleConnectionFactory，所以它拥有SingleConnectionFactory的所有功能，同时它还新增了缓存功能，它可以缓存Session、MessageProducer和MessageConsumer。
+		
+		 -->
+	<bean id="connectionFactory"
+		class="org.springframework.jms.connection.CachingConnectionFactory">
+		<!-- class="org.apache.activemq.ActiveMQConnectionFactory"> -->
+		<property name="targetConnectionFactory" ref="amqConnectionFactory"></property>
+		<property name="sessionCacheSize" value="10" />
+		
+	</bean>
+	    <!-- Spring提供的JMS工具类，它可以进行消息发送、接收等 -->  
+	
+	<!-- jmsTemplate  all system must-->
+	<bean id="jmsTemplate"
+		class="org.springframework.jms.core.JmsTemplate">
+		        <!-- 这个connectionFactory对应的是我们定义的Spring提供的那个ConnectionFactory对象 -->  
+		
+		<property name="connectionFactory">
+			<ref bean="connectionFactory" />
+		</property>
+		<property name="deliveryPersistent">
+			<value>true</value>
+		</property>
+		
+	</bean>
+	<!-- queue-->
+	<bean id="queue"
+		class="org.apache.activemq.command.ActiveMQQueue">
+		<constructor-arg index="0">
+			<value>${um_organ_queue}</value>
+		</constructor-arg>
+	</bean>
+	
+	<!-- topic-->
+	<bean id="topic"
+		class="org.apache.activemq.command.ActiveMQTopic">
+		<constructor-arg index="0">
+			<value>${app_organ_topic}</value>
+		</constructor-arg>
+	</bean>
+<!-- 所以我们在配置一个MessageListenerContainer的时候有三个属性必须指定，一个是表示从哪里监听的ConnectionFactory；一个是表示监听什么的Destination；一个是接收到消息以后进行消息处理的MessageListener。
+
+Spring一共为我们提供了两种类型的MessageListenerContainer，SimpleMessageListenerContainer和DefaultMessageListenerContainer。
+SimpleMessageListenerContainer会在一开始的时候就创建一个会话session和消费者Consumer，并且会使用标准的JMS MessageConsumer.setMessageListener()方法注册监听器让JMS提供者调用监听器的回调函数。它不会动态的适应运行时需要和参与外部的事务管理。兼容性方面，它非常接近于独立的JMS规范，但一般不兼容Java EE的JMS限制。
+大多数情况下我们还是使用的DefaultMessageListenerContainer，跟SimpleMessageListenerContainer相比，DefaultMessageListenerContainer会动态的适应运行时需要，并且能够参与外部的事务管理。它很好的平衡了对JMS提供者要求低、先进功能如事务参与和兼容Java EE环境。
+ -->	
+ <!-- 
+ setClientID call not supported on proxy for shared Connection. Set the 'clientId' property on the SingleConnectionFactory instead.
+  	所以在这个监听器容器中不能使用connectionFactory(CachingConnectionFactory)
+  	
+  -->
+	<bean id="topicReceiverListenerContainer"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="subscriptionDurable">
+			<value>true</value>
+		</property>
+		<property name="durableSubscriptionName">
+			<value>124</value>
+		</property>
+		<property name="clientId">
+			<value>124</value>
+		</property> 
+		<property name="connectionFactory" ref="amqConnectionFactory" />
+		<property name="destination" ref="topic" />
+		<property name="messageListener" ref="topicReceiver" />
+	
+	</bean>
+	<!--  
+	<bean id="topicReceiverListener"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="destination" ref="topic" />
+		<property name="messageListener" ref="topicReceiver" />
+		<property name="autoStartup" value="false" />
+		<property name="concurrentConsumers" value="2" />
+		<property name="maxConcurrentConsumers" value="30" />
+	</bean>
+	-->
+	<bean id="queueReceiverListenerContainer"
+		class="org.springframework.jms.listener.DefaultMessageListenerContainer">
+		<property name="connectionFactory" ref="connectionFactory" />
+		<property name="destination" ref="queue" />
+		<property name="messageListener" ref="queueReceiver" />
+	
+	</bean>
+	<!--    在Spring整合JMS的应用中我们在定义消息监听器的时候一共可以定义三种类型的消息监听器，分别是MessageListener、SessionAwareMessageListener和MessageListenerAdapter -->
+	<bean id="queueReceiver" 
+		class="com.wangcc.activemq.spring.listener.QueueMesssageListener">
+	</bean>
+	<bean id="topicReceiver" 
+		class="com.wangcc.activemq.spring.listener.TopicMessageListener">
+	</bean>
+	 <bean id="sessionAwareQueue" class="org.apache.activemq.command.ActiveMQQueue">  
+        <constructor-arg>  
+            <value>sessionAwareQueue</value>  
+        </constructor-arg>  
+    </bean>  
+	 <bean id="sessionAwareListenerContainer"  
+        class="org.springframework.jms.listener.DefaultMessageListenerContainer">  
+        <property name="connectionFactory" ref="connectionFactory" />  
+        <property name="destination" ref="sessionAwareQueue" />  
+        <property name="messageListener" ref="queueSessionAwareMessageListener" />  
+        </bean>
+        <bean id="queueSessionAwareMessageListener" class="com.wangcc.activemq.spring.listener.QueueSessionAwareMessageListener">
+                <property name="destination" ref="queue"/>  
+         </bean>
+         
+         
+         <!--  MessageListenerAdapter类实现了MessageListener接口和SessionAwareMessageListener接口，它的主要作用是将接收到的消息进行类型转换，然后通过反射的形式把它交给一个普通的Java类进行处理。
+       MessageListenerAdapter会把接收到的消息做如下转换：
+       TextMessage转换为String对象；
+       BytesMessage转换为byte数组；
+       MapMessage转换为Map对象；
+       ObjectMessage转换为对应的Serializable对象。
+       既然前面说了MessageListenerAdapter会把接收到的消息做一个类型转换，然后利用反射把它交给真正的目标处理器——一个普通的Java类进行处理（如果真正的目标处理器是一个MessageListener或者是一个SessionAwareMessageListener，那么Spring将直接使用接收到的Message对象作为参数调用它们的onMessage方法，而不会再利用反射去进行调用），那么我们在定义一个MessageListenerAdapter的时候就需要为它指定这样一个目标类。
+       这个目标类我们可以通过MessageListenerAdapter的构造方法参数指定,也可以用delegate属性指定
+       
+       前面说了如果我们指定的这个目标处理器是一个MessageListener或者是一个SessionAwareMessageListener的时候Spring将直接利用接收到的Message对象作为方法参数调用它们的onMessage方法。但是如果指定的目标处理器是一个普通的Java类时Spring将利用Message进行了类型转换之后的对象作为参数通过反射去调用真正的目标处理器的处理方法，那么Spring是如何知道该调用哪个方法呢？这是通过MessageListenerAdapter的defaultListenerMethod属性来决定的，当我们没有指定该属性时，Spring会默认调用目标处理器的handleMessage方法。
+        -->
+        <!-- 用于测试消息监听适配器的队列目的地 -->  
+    <bean id="adapterQueue" class="org.apache.activemq.command.ActiveMQQueue">  
+        <constructor-arg>  
+            <value>adapterQueue</value>  
+        </constructor-arg>  
+    </bean>  
+         <bean id="messageListenerAdapter" class="org.springframework.jms.listener.adapter.MessageListenerAdapter">  
+        <property name="delegate">  
+            <bean class="com.wangcc.activemq.spring.listener.QueueAdapterMessageListener"/>  
+        </property>  
+                <property name="defaultListenerMethod" value="receiveMessage"/>  
+        		<property name="defaultResponseDestination" ref="defaultResponseQueue"></property>
+    </bean>  
+    
+    
+    <!-- 消息监听适配器对应的监听容器 -->  
+    <bean id="messageListenerAdapterContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">  
+        <property name="connectionFactory" ref="connectionFactory"/>  
+        <property name="destination" ref="adapterQueue"/>  
+        <!-- 使用MessageListenerAdapter来作为消息监听器 -->  
+        <property name="messageListener" ref="messageListenerAdapter"/>
+         </bean>  
+
+
+    <!--  第二，通过MessageListenerAdapter的defaultResponseDestination属性来指定。这里我们也来做一个测试，首先维持生产者发送消息的代码不变，即发送消息前不通过Message的setJMSReplyTo方法指定消息的回复目的地；接着我们在定义MessageListenerAdapter的时候通过其defaultResponseDestination属性指定其默认的回复目的地是“defaultResponseQueue”，并定义defaultResponseQueue对应的消息监听器和消息监听容器。 -->
+        <bean id="defaultResponseQueue" class="org.apache.activemq.command.ActiveMQQueue">  
+        <constructor-arg>  
+            <value>defaultResponseQueue</value>  
+        </constructor-arg>  
+    </bean>  
+    <bean id="defaultResponseQueueListener" class="com.wangcc.activemq.spring.listener.DefaultResponseMessageListener">
+    </bean>
+    <bean id="defaultResponseQueueMessageListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">  
+    <property name="connectionFactory" ref="connectionFactory"/>  
+    <property name="destination" ref="defaultResponseQueue"/>  
+    <property name="messageListener" ref="defaultResponseQueueListener"/>  
+</bean>  
+    
+    
+    <bean id="responseQueue" class="org.apache.activemq.command.ActiveMQQueue">
+      <constructor-arg>  
+        <value>responseQueue</value>  
+    </constructor-arg>  
+    </bean>
+    <!-- responseQueue对应的监听容器 -->  
+<bean id="responseQueueMessageListenerContainer" class="org.springframework.jms.listener.DefaultMessageListenerContainer">  
+    <property name="connectionFactory" ref="connectionFactory"/>  
+    <property name="destination" ref="responseQueue"/>  
+    <property name="messageListener" ref="responseQueueListener"/>  
+</bean>  
+<!-- responseQueue对应的监听器 -->  
+<bean id="responseQueueListener" class="com.wangcc.activemq.spring.listener.ResponseQueueListener"/>  
+</beans>
